@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment';
 
 export default function RecentTransactions({ recentTransactions, darkMode }) {
   return (
@@ -12,7 +13,7 @@ export default function RecentTransactions({ recentTransactions, darkMode }) {
         <ul>
           {recentTransactions.map((transaction) => (
             <li
-              key={transaction.id}
+              key={transaction._id} // Fix: `_id` MongoDB ka hota hai, `id` nahi
               className={
                 transaction.type === 'donation'
                   ? 'text-green-400'
@@ -21,7 +22,8 @@ export default function RecentTransactions({ recentTransactions, darkMode }) {
             >
               {transaction.familyMember}{' '}
               {transaction.type === 'donation' ? 'donated' : 'spent'} ₹
-              {transaction.amount} on {transaction.timestamp}
+              {transaction.amount} on{' '}
+              {moment(transaction.timestamp).format('DD MMM YYYY, h:mm A')}
             </li>
           ))}
         </ul>
