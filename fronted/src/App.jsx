@@ -11,9 +11,11 @@ export default function App() {
   const [totalExpenses, setTotalExpenses] = useState(0);
   const [darkMode, setDarkMode] = useState(false);
   const [recentTransactions, setRecentTransactions] = useState([]);
-  const [familyMember, setFamilyMember] = useState('');
-  const [transactionType, setTransactionType] = useState('donation');
-  const [amount, setAmount] = useState('');
+  const [transactionData, setTransactionData] = useState({
+    familyMember: '',
+    transactionType: 'donation',
+    amount: '',
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -40,6 +42,7 @@ export default function App() {
       calculateTotals(res.data);
     } catch (error) {
       console.error('Error fetching transactions:', error);
+      alert('There was an issue fetching the transactions.');
     } finally {
       setLoading(false);
     }
@@ -57,25 +60,36 @@ export default function App() {
   };
 
   const handleTransaction = async () => {
-    if (!amount || amount <= 0 || !familyMember) return;
+    if (
+      !transactionData.amount ||
+      transactionData.amount <= 0 ||
+      !transactionData.familyMember ||
+      isNaN(transactionData.amount)
+    ) {
+      alert('Please enter valid data.');
+      return;
+    }
     const newTransaction = {
-      familyMember,
-      amount: parseInt(amount),
-      type: transactionType,
+      familyMember: transactionData.familyMember,
+      amount: parseInt(transactionData.amount),
+      type: transactionData.transactionType,
     };
     await axios.post('http://localhost:5000/transactions', newTransaction);
     fetchTransactions();
   };
 
+  const themeStyles = darkMode
+    ? { bgColor: 'bg-gray-900', textColor: 'text-white' }
+    : { bgColor: 'bg-gray-100', textColor: 'text-gray-900' };
+
   return (
     <div
-      className={`min-h-screen flex flex-col items-center p-6 relative ${
-        darkMode ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-900'
-      }`}
+      className={`min-h-screen flex flex-col items-center p-6 relative ${themeStyles.bgColor} ${themeStyles.textColor}`}
     >
       {loading ? (
         <div className="flex items-center justify-center h-screen">
           <div className="w-16 h-16 border-4 border-blue-500 border-dashed rounded-full animate-spin"></div>
+          <p className="ml-4">Loading transactions...</p>
         </div>
       ) : (
         <>
@@ -86,16 +100,10 @@ export default function App() {
             totalExpenses={totalExpenses}
           />
           <TransactionForm
-            {...{
-              amount,
-              setAmount,
-              familyMember,
-              setFamilyMember,
-              transactionType,
-              setTransactionType,
-              handleTransaction,
-              darkMode,
-            }}
+            transactionData={transactionData}
+            setTransactionData={setTransactionData}
+            handleTransaction={handleTransaction}
+            darkMode={darkMode}
           />
           <RecentTransactions
             recentTransactions={recentTransactions}

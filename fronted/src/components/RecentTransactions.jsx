@@ -13,7 +13,7 @@ export default function RecentTransactions({ recentTransactions, darkMode }) {
         <ul>
           {recentTransactions.map((transaction) => (
             <li
-              key={transaction._id} // Fix: `_id` MongoDB ka hota hai, `id` nahi
+              key={transaction._id}
               className={
                 transaction.type === 'donation'
                   ? 'text-green-400'

@@ -7,6 +7,7 @@ export default function ToggleButton({ darkMode, setDarkMode }) {
         {darkMode ? 'Dark Mode' : 'Light Mode'}
       </span>
       <div
+        aria-label="Toggle dark mode"
         className={`w-12 h-6 flex items-center bg-gray-300 rounded-full p-1 cursor-pointer transition-all ${
           darkMode ? 'bg-gray-700' : 'bg-gray-300'
         }`}
