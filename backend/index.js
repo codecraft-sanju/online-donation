@@ -12,7 +12,7 @@ app.use(express.json());
 // Connect to MongoDB
 connectDB();
 
-// ✅ Fetch all transactions from MongoDB
+//Fetch all transactions from MongoDB
 app.get('/transactions', async (req, res) => {
   try {
     const transactions = await Transaction.find();
@@ -21,6 +21,7 @@ app.get('/transactions', async (req, res) => {
     res.status(500).json({ error: 'Failed to fetch transactions' });
   }
 });
+
 
 // ✅ Add a new transaction
 app.post('/transactions', async (req, res) => {
